@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    restart: always
+    container_name: postgres
+    image: postgres:16
+    environment:
+      - POSTGRES_USER=alen
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=customer_test
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the SQL file for initialization
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+volumes:
+  postgres-data:
