@@ -6,6 +6,9 @@ import com.stockmanagement.stockmanagement.Tables.TransactionRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class TransactionServiceImpl implements TransactionService{
@@ -61,5 +64,36 @@ public class TransactionServiceImpl implements TransactionService{
         assert transaction != null;
         transactionRepo.delete(transaction);
         return "Transaction deleted";
+    }
+    @Override
+    public List<TransactionDTO> getAllTransactions() {
+        List<Transaction> transactionList = transactionRepo.findAll();
+        return transactionList.stream()
+                .map(this::getTransactionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TransactionDTO> searchByStockSymbol(String stockSymbol) {
+        List<Transaction> transactionList = transactionRepo.findByStockSymContaining(stockSymbol);
+        return transactionList.stream()
+                .map(this::getTransactionDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public long getTotalTransactionCount() {
+        return transactionRepo.count();
+    }
+    @Override
+    public List<TransactionDTO> getTransactionsByType(String type) {
+        List<Transaction> transactionList = transactionRepo.findByType(type);
+        return transactionList.stream()
+                .map(this::getTransactionDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public String deleteAllTransactions() {
+        transactionRepo.deleteAll();
+        return "All transactions deleted";
     }
 }

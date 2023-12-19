@@ -6,6 +6,9 @@ import com.stockmanagement.stockmanagement.Tables.UserRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -61,4 +64,30 @@ public class UserServiceImpl implements UserService {
         userRepo.delete(user);
         return "User deleted successfully";
     }
+
+    @Override
+    public String deleteAllUsers() {
+        userRepo.deleteAll();
+        return "All users deleted successfully";
+    }
+
+    @Override
+    public List<UserDTO> searchByUsername(String username) {
+        List<User> userList = userRepo.findByUsernameContaining(username);
+        return userList.stream()
+                .map(this::getUserDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public boolean userExists(String username, String email) {
+        return userRepo.existsByUsernameOrEmail(username, email);
+    }
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> userList = userRepo.findAll();
+        return userList.stream()
+                .map(this::getUserDTO)
+                .collect(Collectors.toList());
+    }
+
 }
